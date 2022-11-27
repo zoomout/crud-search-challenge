@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,29 +32,20 @@ class ChallengeApplicationTests {
             .build();
     }
 
-    @Disabled//TODO fix
     @SneakyThrows
     @Test
     void testProfileIsExposed() {
-        this.mockMvc.perform(get("/api/profile").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/profile").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andDo(document("index"));
+            .andDo(document("profile"));
     }
 
-    @SneakyThrows//TODO fix
+    @SneakyThrows
     @Test
     void testGetRecipesReturnsEmptyByDefault() {
-        this.mockMvc.perform(get("/api/recipes").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/recipes").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andDo(document("index"));
-    }
-
-    @SneakyThrows//TODO fix should be 404
-    @Test
-    void testGetRootReturns404() {
-        this.mockMvc.perform(get("/").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(document("index"));
+            .andDo(document("recipes"));
     }
 
 }
