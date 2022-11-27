@@ -28,6 +28,28 @@ Query filter features:
 ./mvnw clean test
 ```
 
+## Service discoverability
+
+[Resource discoverability](https://docs.spring.io/spring-data/rest/docs/current/reference/html/#repository-resources.resource-discoverability)
+
+Make HTTP call
+```
+GET http://localhost:8080/api/
+```
+Response
+```
+{
+    "_links": {
+        "recipe": {
+            "href": "http://localhost:8080/api/recipes"
+        },
+        "profile": {
+            "href": "http://localhost:8080/api/profile"
+        }
+    }
+}
+```
+
 ## API Docs
 
 After running tests `./mvnw clean test` the API documentation is generated in `target/generated-snippets`

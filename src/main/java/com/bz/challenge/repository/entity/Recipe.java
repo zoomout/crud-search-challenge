@@ -15,14 +15,12 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 @Entity
 @Data
-@RestResource(rel = "recipe", path = "recipes")
+@RestResource
 public class Recipe {
 
     @Id
     @GeneratedValue
     Long id;
-
-    //TODO add name + number of portions
 
     @Column(nullable = false)
     Boolean vegetarian;
