@@ -1,6 +1,7 @@
 package com.bz.challenge.core.exception;
 
 import com.bz.challenge.controller.dto.ErrorResponseDto;
+import com.bz.challenge.core.exception.types.InvalidQueryException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,11 @@ public class CustomExceptionHandler {
             .map(constraintViolation -> "'" + constraintViolation.getPropertyPath() + "' " + constraintViolation.getMessage())
             .collect(Collectors.joining(","));
         return new ResponseEntity<>(new ErrorResponseDto(violations), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidQueryException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotSupportedOperationException(InvalidQueryException exception) {
+        return new ResponseEntity<>(new ErrorResponseDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

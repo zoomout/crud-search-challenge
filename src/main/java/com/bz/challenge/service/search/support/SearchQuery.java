@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 public @interface SearchQuery {
 
     String value();
+
+    String[] allowedKeys();
 }

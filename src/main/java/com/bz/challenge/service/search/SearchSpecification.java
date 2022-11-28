@@ -3,11 +3,13 @@ package com.bz.challenge.service.search;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath;
+import org.hibernate.query.sqm.tree.domain.SqmPluralValuedSimplePath;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
@@ -19,52 +21,64 @@ import org.springframework.data.jpa.domain.Specification;
 @RequiredArgsConstructor
 public class SearchSpecification<T> implements Specification<T> {
 
-    private final SearchCriterion searchCriterion;
+    private final SearchCriterion search;
 
     @Override
-    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        var value = searchCriterion.getValue();
-        Path<Object> objectPath = root.get(searchCriterion.getKey());
+    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        var value = search.getValue();
+        Path<Object> objectPath = root.get(search.getKey());
+        query.distinct(true);
 
-        Class<Object> clazz = ((SqmBasicValuedSimplePath<Object>) objectPath).getBindableJavaType();
+        Class<Object> clazz;
+        if (objectPath instanceof SqmBasicValuedSimplePath) {
+            clazz = ((SqmBasicValuedSimplePath<Object>) objectPath).getBindableJavaType();
+        } else if (objectPath instanceof SqmPluralValuedSimplePath) {
+            return switch (search.getOperation()) {
+                case CONTAINS -> cb.equal(root.join(search.getKey(), JoinType.INNER), value);
+                case DOES_NOT_CONTAIN -> cb.notEqual(root.join(search.getKey(), JoinType.INNER), value);
+                default -> throw new IllegalArgumentException("Invalid search operation '" + search.getOperation() + "' for join");
+            };
+        } else {
+            throw new IllegalArgumentException("Not supported operation '" + search.getOperation() + "' on " + objectPath);
+        }
 
         if (clazz.equals(String.class)) {
-            var expression = criteriaBuilder.lower(root.get(searchCriterion.getKey()));
-            return getStringPredicate(criteriaBuilder, value.toLowerCase(), expression);
+            var expression = cb.lower(root.get(search.getKey()));
+            return getStringPredicate(cb, value.toLowerCase(), expression);
         }
         if (clazz.equals(Boolean.class)) {
-            Path<Boolean> expression = root.get(searchCriterion.getKey());
-            return getBooleanPredicate(criteriaBuilder, Boolean.valueOf(value), expression);
+            Path<Boolean> expression = root.get(search.getKey());
+            return getBooleanPredicate(cb, Boolean.valueOf(value), expression);
         }
         if (clazz.equals(Integer.class)) {
-            Path<Integer> expression = root.get(searchCriterion.getKey());
-            return getIntegerPredicate(criteriaBuilder, Integer.valueOf(value), expression);
+            Path<Integer> expression = root.get(search.getKey());
+            return getIntegerPredicate(cb, Integer.valueOf(value), expression);
         }
         throw new IllegalArgumentException("Not supported query type: " + clazz.getSimpleName());
     }
 
-    private Predicate getStringPredicate(CriteriaBuilder criteriaBuilder, String value, Expression<String> expression) {
-        return switch (searchCriterion.getOperation()) {
-            case CONTAINS -> criteriaBuilder.like(expression, "%" + value + "%");
-            case DOES_NOT_CONTAIN -> criteriaBuilder.notLike(expression, "%" + value + "%");
-            case EQUAL -> criteriaBuilder.equal(expression, value);
-            case NOT_EQUAL -> criteriaBuilder.notEqual(expression, value);
+    private Predicate getStringPredicate(CriteriaBuilder cb, String value, Expression<String> expression) {
+        return switch (search.getOperation()) {
+            case CONTAINS -> cb.like(expression, "%" + value + "%");
+            case DOES_NOT_CONTAIN -> cb.notLike(expression, "%" + value + "%");
+            case EQUAL -> cb.equal(expression, value);
+            case NOT_EQUAL -> cb.notEqual(expression, value);
         };
     }
 
-    private Predicate getBooleanPredicate(CriteriaBuilder criteriaBuilder, Boolean value, Path<Boolean> path) {
-        return switch (searchCriterion.getOperation()) {
-            case EQUAL -> criteriaBuilder.equal(path, value);
-            case NOT_EQUAL -> criteriaBuilder.notEqual(path, value);
-            default -> throw new IllegalArgumentException("Invalid search operation '" + searchCriterion.getOperation() + "' for boolean");
+    private Predicate getBooleanPredicate(CriteriaBuilder cb, Boolean value, Path<Boolean> path) {
+        return switch (search.getOperation()) {
+            case EQUAL -> cb.equal(path, value);
+            case NOT_EQUAL -> cb.notEqual(path, value);
+            default -> throw new IllegalArgumentException("Invalid search operation '" + search.getOperation() + "' for boolean");
         };
     }
 
-    private Predicate getIntegerPredicate(CriteriaBuilder criteriaBuilder, Integer value, Path<Integer> path) {
-        return switch (searchCriterion.getOperation()) {
-            case EQUAL -> criteriaBuilder.equal(path, value);
-            case NOT_EQUAL -> criteriaBuilder.notEqual(path, value);
-            default -> throw new IllegalArgumentException("Invalid search operation '" + searchCriterion.getOperation() + "' for boolean");
+    private Predicate getIntegerPredicate(CriteriaBuilder cb, Integer value, Path<Integer> path) {
+        return switch (search.getOperation()) {
+            case EQUAL -> cb.equal(path, value);
+            case NOT_EQUAL -> cb.notEqual(path, value);
+            default -> throw new IllegalArgumentException("Invalid search operation '" + search.getOperation() + "' for boolean");
         };
     }
 

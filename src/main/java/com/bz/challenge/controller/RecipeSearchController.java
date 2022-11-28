@@ -18,7 +18,10 @@ public class RecipeSearchController {
 
     @GetMapping("/api/recipes/search")
     public Page<Recipe> searchByCriteria(
-        @SearchQuery("query") RecipeSearchDto recipeSearchDto,
+        @SearchQuery(
+            value = "query",
+            allowedKeys = {"vegetarian", "servingsNumber", "ingredients", "instructions"}
+        ) RecipeSearchDto recipeSearchDto,
         Pageable pageable
     ) {
         return recipeSearchService.searchRecipes(recipeSearchDto.getSearchCriterionList(), pageable);

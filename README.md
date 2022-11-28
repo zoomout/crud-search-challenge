@@ -20,9 +20,11 @@ have different performance requirements.
 For CRUD operations Spring Data REST is used. It provides implementation of all CRUD operations with pagination and sorting. Also, it implements the
 HATEOAS.
 
-### Search
+#### Search
 
-For search, I used Spring data Specification filtering capabilities. Query filter features:
+For search, I used Spring data Specification filtering capabilities.
+
+Query filter features:
 
 - optional search parameters
 - include or exclude items

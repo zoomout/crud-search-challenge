@@ -40,6 +40,9 @@ public class RecipeSearchService {
         if (Objects.isNull(searchCriteria)) {
             return Optional.empty();
         }
+        if (searchCriteria.isEmpty()) {
+            return Optional.empty();
+        }
         final List<SearchSpecification<Recipe>> recipeSpecificationList = searchCriteria.stream().map(SearchSpecification<Recipe>::new).toList();
         return combineAnd(recipeSpecificationList);
     }
