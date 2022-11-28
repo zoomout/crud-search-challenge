@@ -23,6 +23,7 @@ HATEOAS.
 #### Search
 
 For search, I used Spring data Specification filtering capabilities.
+The relation between Recipes and Ingredients is Many-To-Many.
 
 Query filter features:
 
@@ -68,6 +69,8 @@ E.G. GET http://localhost:8080/api/profile/recipes
 After running tests `./mvnw clean test` the API documentation is generated in `target/generated-snippets`
 The documentation can be packaged and deployed or served as
 a [static content](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.static-content)
+
+Note: another option is to use Swagger/Open API generation of documentation. But it didn't work for me with Spring 3.0.0 (need more time to investigate).
 
 ## What is left to make it production ready
 

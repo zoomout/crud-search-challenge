@@ -3,11 +3,11 @@ package com.bz.challenge.service.search;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath;
 import org.hibernate.query.sqm.tree.domain.SqmPluralValuedSimplePath;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,24 +18,28 @@ import org.springframework.data.jpa.domain.Specification;
  *
  * @param <T> data type
  */
-@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SearchSpecification<T> implements Specification<T> {
 
     private final SearchCriterion search;
 
+    public static <T> SearchSpecification<T> with(SearchCriterion search) {
+        return new SearchSpecification<>(search);
+    }
+
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        var value = search.getValue();
-        Path<Object> objectPath = root.get(search.getKey());
-        query.distinct(true);
+        final var value = search.getValue();
+        String[] split = search.getKey().split("\\."); //todo move higher and validate
+        Path<Object> objectPath = root.get(split[0]);
 
         Class<Object> clazz;
         if (objectPath instanceof SqmBasicValuedSimplePath) {
             clazz = ((SqmBasicValuedSimplePath<Object>) objectPath).getBindableJavaType();
         } else if (objectPath instanceof SqmPluralValuedSimplePath) {
             return switch (search.getOperation()) {
-                case CONTAINS -> cb.equal(root.join(search.getKey(), JoinType.INNER), value);
-                case DOES_NOT_CONTAIN -> cb.notEqual(root.join(search.getKey(), JoinType.INNER), value);
+                case CONTAINS -> cb.equal(root.get(split[0]).get(split[1]), value);
+                case DOES_NOT_CONTAIN -> cb.notEqual(root.get(split[0]).get(split[1]), value);
                 default -> throw new IllegalArgumentException("Invalid search operation '" + search.getOperation() + "' for join");
             };
         } else {
@@ -43,7 +47,7 @@ public class SearchSpecification<T> implements Specification<T> {
         }
 
         if (clazz.equals(String.class)) {
-            var expression = cb.lower(root.get(search.getKey()));
+            final var expression = cb.lower(root.get(search.getKey()));
             return getStringPredicate(cb, value.toLowerCase(), expression);
         }
         if (clazz.equals(Boolean.class)) {

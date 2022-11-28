@@ -6,6 +6,7 @@ import com.bz.challenge.core.exception.types.NotSupportedOperationException;
 import com.bz.challenge.service.search.SearchCriterion;
 import com.bz.challenge.service.search.SearchOperation;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -27,13 +28,13 @@ public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
         NativeWebRequest webRequest,
         WebDataBinderFactory binderFactory
     ) {
-        var attr = parameter.getParameterAnnotation(SearchQuery.class);
-        var value = webRequest.getParameter(attr.value());
-        var allowedKeys = attr.allowedKeys();
+        final var attr = parameter.getParameterAnnotation(SearchQuery.class);
+        final var value = webRequest.getParameter(attr.value());
+        final var allowedKeys = attr.allowedKeys();
         if (Strings.isBlank(value)) {
             return new RecipeSearchDto();
         }
-        var searchCriteria = Arrays.stream(value.split(",")).map(args -> toSearchCriterion(args, allowedKeys)).toList();
+        final var searchCriteria = Arrays.stream(value.split(",")).map(args -> toSearchCriterion(args, allowedKeys)).toList();
         return new RecipeSearchDto(searchCriteria);
     }
 
@@ -44,7 +45,7 @@ public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
         }
         String key = args[0];
         if (!Arrays.asList(allowedKeys).contains(key)) {
-            throw new InvalidQueryException("Key is no allowed: " + key);
+            throw new InvalidQueryException("Key is no allowed: " + key + ". Allowed keys: " + String.join(",", allowedKeys));
         }
         String operation = args[1];
         String value = args[2];

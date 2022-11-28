@@ -32,7 +32,7 @@ public class RecipeSearchService {
      * @return a {@link org.springframework.data.domain.Page} of {@link com.bz.challenge.repository.entity.Recipe}
      */
     public Page<Recipe> searchRecipes(List<SearchCriterion> searchCriteria, Pageable pageable) {
-        var recipeSpecification = buildRecipeSpecification(searchCriteria);
+        final var recipeSpecification = buildRecipeSpecification(searchCriteria);
         return repository.findAll(recipeSpecification.orElse(null), pageable);
     }
 
@@ -43,7 +43,7 @@ public class RecipeSearchService {
         if (searchCriteria.isEmpty()) {
             return Optional.empty();
         }
-        final List<SearchSpecification<Recipe>> recipeSpecificationList = searchCriteria.stream().map(SearchSpecification<Recipe>::new).toList();
+        final var recipeSpecificationList = searchCriteria.stream().map(SearchSpecification::<Recipe>with).toList();
         return combineAnd(recipeSpecificationList);
     }
 

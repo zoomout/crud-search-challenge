@@ -20,7 +20,7 @@ public class RecipeSearchController {
     public Page<Recipe> searchByCriteria(
         @SearchQuery(
             value = "query",
-            allowedKeys = {"vegetarian", "servingsNumber", "ingredients", "instructions"}
+            allowedKeys = {"vegetarian", "servingsNumber", "ingredients.name", "instructions"}
         ) RecipeSearchDto recipeSearchDto,
         Pageable pageable
     ) {
