@@ -10,16 +10,37 @@ Solution is based on technology stack
 - [Maven](https://maven.apache.org/) build tool
 - [Spring REST Docs](https://docs.spring.io/spring-restdocs/docs/3.0.x/reference/htmlsingle/) to document the APIs
 
-Query filter features:
+### Features
+
+I identified two separate features of the application: CRUD and Search. These two features could be even implemented in separate microservices and
+have different performance requirements.
+
+#### CRUD
+
+For CRUD operations Spring Data REST is used. It provides implementation of all CRUD operations with pagination and sorting. Also, it implements the
+HATEOAS.
+
+### Search
+
+For search, I used Spring data Specification filtering capabilities. Query filter features:
 
 - optional search parameters
 - include or exclude items
 - pagination
 
-## To build
+## To run
+
+### To run from IDE
+
+Add a variable into Spring Boot Run configuration `Working directory: $MODULE_WORKING_DIR$`
+
+### To run as a JAR
+
+Build the jar and run it
 
 ```
-./mvnw clean install
+./mvnw clean package
+java -jar ./target/challenge-0.0.1-SNAPSHOT.jar --spring.config.additional-location=application.yml
 ```
 
 ## To test
@@ -32,22 +53,12 @@ Query filter features:
 
 [Resource discoverability](https://docs.spring.io/spring-data/rest/docs/current/reference/html/#repository-resources.resource-discoverability)
 
-Make HTTP call
+To see resources [metadata]{https://docs.spring.io/spring-data/rest/docs/current/reference/html/#metadata}
+
 ```
-GET http://localhost:8080/api/
-```
-Response
-```
-{
-    "_links": {
-        "recipe": {
-            "href": "http://localhost:8080/api/recipes"
-        },
-        "profile": {
-            "href": "http://localhost:8080/api/profile"
-        }
-    }
-}
+GET /api/profile/recipes
+
+E.G. GET http://localhost:8080/api/profile/recipes
 ```
 
 ## API Docs
@@ -55,20 +66,6 @@ Response
 After running tests `./mvnw clean test` the API documentation is generated in `target/generated-snippets`
 The documentation can be packaged and deployed or served as
 a [static content](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.static-content)
-
-## To run
-
-### To run from IDE
-
-Add a variable into Spring Boot Run configuration `Working directory: $MODULE_WORKING_DIR$`
-
-### To run as a JAR
-
-Build the jar and run it (providing production.yml with configuration)
-
-```
-java -jar {DIR}/challenge-0.0.1-SNAPSHOT.jar --spring.config.additional-location=production.yml
-```
 
 ## What is left to make it production ready
 
@@ -81,4 +78,5 @@ java -jar {DIR}/challenge-0.0.1-SNAPSHOT.jar --spring.config.additional-location
 - circuit breaker
 - metrics
 - add tracing
-- more unit tests
+- more tests
+- integration test (integration with a specific database can be tested using Test Containers)

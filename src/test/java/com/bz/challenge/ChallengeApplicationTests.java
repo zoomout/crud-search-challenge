@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -23,8 +24,10 @@ import org.springframework.web.context.WebApplicationContext;
 @ExtendWith(RestDocumentationExtension.class)
 class ChallengeApplicationTests {
 
+    @Autowired
     private MockMvc mockMvc;
 
+    @SneakyThrows
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -35,7 +38,7 @@ class ChallengeApplicationTests {
     @SneakyThrows
     @Test
     void testProfileIsExposed() {
-        this.mockMvc.perform(get("/profile").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/api/profile").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(document("profile"));
     }
@@ -43,9 +46,15 @@ class ChallengeApplicationTests {
     @SneakyThrows
     @Test
     void testGetRecipesReturnsEmptyByDefault() {
-        this.mockMvc.perform(get("/recipes").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/api/recipes").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(document("recipes"));
     }
 
+    //TODO
+    // implement search by all fields
+    // add tests
+    // http://localhost:8080/api/recipes/search/findByInstructionsIgnoreCaseContaining?instructions=add
+    // http://localhost:8080/api/recipes/search/findByVegetarianTrue
+    // http://localhost:8080/api/recipes?page=0&size=5&sort=createdAt,desc
 }

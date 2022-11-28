@@ -15,6 +15,7 @@ spring:
   data:
     rest:
       base-path: /api
+      max-page-size: 1000
   jpa:
     show-sql: false
     hibernate:
