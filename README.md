@@ -22,8 +22,11 @@ HATEOAS.
 
 #### Search
 
-For search, I used Spring data Specification filtering capabilities.
-The relation between Recipes and Ingredients is Many-To-Many.
+First I tried implementing Many-To-Many relations between Recipes and Ingredients to improve indexing of the latter.
+But the solution started growing a lot, making it very difficult to keep it ORM compatible and Database agnostic.
+I made a decision that might not be optimal for search performance, but simplifies the implementation and allows ORM and Database integrations.
+To optimize search I need to know the DB that is used by the company. 
+Options to consider are Elastic search or Postgresql full text search.
 
 Query filter features:
 

@@ -34,13 +34,8 @@ public class Recipe {
     @Column(nullable = false)
     Integer servingsNumber;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "ingredient_recipe",
-        joinColumns = @JoinColumn(name = "ingredient_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "recipe_id", referencedColumnName = "id")
-    )
-    List<Ingredient> ingredients;
+    @Column(nullable = false,  length = 1000)
+    String ingredients;
 
     @Column(nullable = false, length = 1000)
     String instructions;

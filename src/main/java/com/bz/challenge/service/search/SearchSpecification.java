@@ -9,7 +9,6 @@ import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath;
-import org.hibernate.query.sqm.tree.domain.SqmPluralValuedSimplePath;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
@@ -30,21 +29,9 @@ public class SearchSpecification<T> implements Specification<T> {
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         final var value = search.getValue();
-        String[] split = search.getKey().split("\\."); //todo move higher and validate
-        Path<Object> objectPath = root.get(split[0]);
+        Path<Object> objectPath = root.get(search.getKey());
 
-        Class<Object> clazz;
-        if (objectPath instanceof SqmBasicValuedSimplePath) {
-            clazz = ((SqmBasicValuedSimplePath<Object>) objectPath).getBindableJavaType();
-        } else if (objectPath instanceof SqmPluralValuedSimplePath) {
-            return switch (search.getOperation()) {
-                case CONTAINS -> cb.equal(root.get(split[0]).get(split[1]), value);
-                case DOES_NOT_CONTAIN -> cb.notEqual(root.get(split[0]).get(split[1]), value);
-                default -> throw new IllegalArgumentException("Invalid search operation '" + search.getOperation() + "' for join");
-            };
-        } else {
-            throw new IllegalArgumentException("Not supported operation '" + search.getOperation() + "' on " + objectPath);
-        }
+        Class<Object> clazz = ((SqmBasicValuedSimplePath<Object>) objectPath).getBindableJavaType();
 
         if (clazz.equals(String.class)) {
             final var expression = cb.lower(root.get(search.getKey()));
