@@ -7,6 +7,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,6 +65,23 @@ class DataRestControllersTest extends BaseControllerTest {
         var responseString = response.getResponse().getContentAsString();
         var embedded = asFindAllResponse(payload);
         JSONAssert.assertEquals(toJson(embedded), responseString, JSONCompareMode.LENIENT);
+    }
+
+    @SneakyThrows
+    @Test
+    void testPutRecipes() {
+        var createPayload = buildPostRequestPayload();
+        createRecipe(createPayload);
+        var updatePayload = buildPostRequestPayload().put("servingsNumber", 5);
+        var response = this.mockMvc.perform(put("/api/recipes/1")
+                .content(toJson(updatePayload))
+                .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andDo(document("put-recipes"))
+            .andReturn();
+        var responseString = response.getResponse().getContentAsString();
+        JSONAssert.assertEquals(toJson(updatePayload), responseString, JSONCompareMode.LENIENT);
     }
 
     @SneakyThrows

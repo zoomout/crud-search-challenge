@@ -104,3 +104,73 @@ investigate).
 - add tracing
 - more unit tests (not all classed are covered due to time limitation)
 - integration test (integration with a specific database can be tested using Test Containers)
+
+
+## Examples of REST requests
+- Create
+```
+$ curl 'http://localhost:8080/api/recipes' -i -X POST \
+    -H 'Accept: application/json' \
+    -d '{"name":"dish","vegetarian":false,"servingsNumber":4,"ingredients":"carrot, apple, meat","instructions":"Grind the carrots and slice the apples, add some meat"}'
+```
+- Retrieve
+```
+$ curl 'http://localhost:8080/api/recipes' -i -X GET \
+    -H 'Accept: application/json'
+```
+- Update
+```
+$ curl 'http://localhost:8080/api/recipes/1' -i -X PUT \
+    -H 'Accept: application/json' \
+    -d '{"name":"dish","vegetarian":false,"servingsNumber":5,"ingredients":"carrot, apple, meat","instructions":"Grind the carrots and slice the apples, add some meat"}'
+```
+- Delete
+```
+$ curl 'http://localhost:8080/api/recipes/1' -i -X DELETE \
+    -H 'Accept: application/json'
+```
+- Search
+```
+$ curl 'http://localhost:8080/api/recipes/search?query=vegetarian!eq!false_AND_ingredients!cn!chicken_AND_servingsNumber!eq!4_AND_instructions!nc!cooke%20it' -i -X GET \
+    -H 'Accept: application/json'
+    
+Response:
+
+{
+  "content": [
+    {
+      "name": "dish-non-veggie-4-chicken,egg",
+      "vegetarian": false,
+      "servingsNumber": 4,
+      "ingredients": "chicken,egg",
+      "instructions": "slice it, boil it"
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "empty": true,
+      "unsorted": true,
+      "sorted": false
+    },
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 20,
+    "unpaged": false,
+    "paged": true
+  },
+  "last": true,
+  "totalPages": 1,
+  "totalElements": 1,
+  "first": true,
+  "size": 20,
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "unsorted": true,
+    "sorted": false
+  },
+  "numberOfElements": 1,
+  "empty": false
+}
+
+```
