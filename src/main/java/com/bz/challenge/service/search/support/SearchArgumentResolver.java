@@ -13,6 +13,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+/**
+ * Resolves custom arguments to facilitate search functionality.
+ * <p>
+ * Search is applied for an API annotated by {@link com.bz.challenge.service.search.support.SearchQuery}
+ */
 public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
@@ -31,7 +36,7 @@ public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
         final var value = webRequest.getParameter(attr.value());
         final var allowedKeys = attr.allowedKeys();
         if (Strings.isBlank(value)) {
-            return new RecipeSearchDto();
+            return null;
         }
         var groups = value.split("_AND_");
         if (groups.length > attr.maxGroups()) {

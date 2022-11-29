@@ -10,6 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST API that provides {@link com.bz.challenge.repository.entity.Recipe} search functionality
+ */
 @RequiredArgsConstructor
 @RestController
 public class RecipeSearchController {
@@ -24,6 +27,6 @@ public class RecipeSearchController {
         ) RecipeSearchDto recipeSearchDto,
         Pageable pageable
     ) {
-        return recipeSearchService.searchRecipes(recipeSearchDto.getSearchCriterionList(), pageable);
+        return recipeSearchService.searchRecipes(recipeSearchDto.searchCriterionList(), pageable);
     }
 }

@@ -12,12 +12,12 @@ Solution is based on technology stack
 
 ### Features
 
-I identified two separate features of the application: CRUD and Search. These two features could be even implemented in separate microservices and
-have different performance requirements.
+I identified two separate features of the application: CRUD and Search. These two features could be implemented in separate microservices and may have
+different performance requirements.
 
 #### CRUD
 
-For CRUD operations Spring Data REST is used. It provides implementation of all CRUD operations with pagination and sorting. Also, it implements the
+For CRUD operations I used Spring Data REST. It provides implementation of all CRUD operations with pagination and sorting. Also, it implements the
 HATEOAS.
 
 #### Search
@@ -25,7 +25,8 @@ HATEOAS.
 First I tried implementing Many-To-Many relations between Recipes and Ingredients to improve indexing of the latter. But the solution started growing
 a lot, making it very difficult to keep it ORM compatible and Database agnostic. I made a decision that might not be optimal for search performance,
 but simplifies the implementation and allows ORM and Database integrations. To optimize search I need to know the DB that is used by the company.
-Options to consider are Elastic search or Postgresql full text search.
+Options to consider are: Elastic search or Postgresql full text search.
+It is also possible to write custom queries using JDBC PreparedStatement.
 
 Query filter features:
 
@@ -51,7 +52,8 @@ ne - doesn't equal
 
 ### To run from IDE
 
-Add a variable into Spring Boot Run configuration `Working directory: $MODULE_WORKING_DIR$`
+- Add a variable into Spring Boot Run configuration `Working directory: $MODULE_WORKING_DIR$`
+- Run Application from your IDE: src/main/java/com/bz/challenge/ChallengeApplication.java
 
 ### To run as a JAR
 
