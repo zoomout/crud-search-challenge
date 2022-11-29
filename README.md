@@ -74,7 +74,7 @@ java -jar ./target/challenge-0.0.1-SNAPSHOT.jar --spring.config.additional-locat
 
 [Resource discoverability](https://docs.spring.io/spring-data/rest/docs/current/reference/html/#repository-resources.resource-discoverability)
 
-To see resources [metadata]{https://docs.spring.io/spring-data/rest/docs/current/reference/html/#metadata}
+To see resources [metadata](https://docs.spring.io/spring-data/rest/docs/current/reference/html/#metadata)
 
 ```
 GET /api/profile/recipes
