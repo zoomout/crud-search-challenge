@@ -22,10 +22,9 @@ HATEOAS.
 
 #### Search
 
-First I tried implementing Many-To-Many relations between Recipes and Ingredients to improve indexing of the latter.
-But the solution started growing a lot, making it very difficult to keep it ORM compatible and Database agnostic.
-I made a decision that might not be optimal for search performance, but simplifies the implementation and allows ORM and Database integrations.
-To optimize search I need to know the DB that is used by the company. 
+First I tried implementing Many-To-Many relations between Recipes and Ingredients to improve indexing of the latter. But the solution started growing
+a lot, making it very difficult to keep it ORM compatible and Database agnostic. I made a decision that might not be optimal for search performance,
+but simplifies the implementation and allows ORM and Database integrations. To optimize search I need to know the DB that is used by the company.
 Options to consider are Elastic search or Postgresql full text search.
 
 Query filter features:
@@ -33,6 +32,20 @@ Query filter features:
 - optional search parameters
 - include or exclude items
 - pagination
+
+Query should be a GET request, thus I defined my own query parameters:
+
+```
+GET /api/recipes/search?query=key1!operation1!value1_AND_key2!operation2!value2
+Where: 
+'_AND_'  - is a group delimeter, groups are combined via AND operator
+'!'      - is a delimeter withing group (separates key,operation,value)
+allowed operations:
+cn - contains
+nc - doesn't contain
+eq - equals
+ne - doesn't equal
+```
 
 ## To run
 
@@ -73,7 +86,8 @@ After running tests `./mvnw clean test` the API documentation is generated in `t
 The documentation can be packaged and deployed or served as
 a [static content](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.static-content)
 
-Note: another option is to use Swagger/Open API generation of documentation. But it didn't work for me with Spring 3.0.0 (need more time to investigate).
+Note: another option is to use Swagger/Open API generation of documentation. But it didn't work for me with Spring 3.0.0 (need more time to
+investigate).
 
 ## What is left to make it production ready
 
@@ -86,5 +100,5 @@ Note: another option is to use Swagger/Open API generation of documentation. But
 - circuit breaker
 - metrics
 - add tracing
-- more tests
+- more unit tests (not all classed are covered due to time limitation)
 - integration test (integration with a specific database can be tested using Test Containers)

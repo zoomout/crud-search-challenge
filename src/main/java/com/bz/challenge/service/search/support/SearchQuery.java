@@ -14,4 +14,7 @@ public @interface SearchQuery {
     String value();
 
     String[] allowedKeys();
+
+    int maxGroups() default 10;
+
 }
