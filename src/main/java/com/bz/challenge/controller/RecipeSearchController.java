@@ -27,6 +27,6 @@ public class RecipeSearchController {
         ) RecipeSearchDto recipeSearchDto,
         Pageable pageable
     ) {
-        return recipeSearchService.searchRecipes(recipeSearchDto.searchCriterionList(), pageable);
+        return recipeSearchService.searchRecipes(recipeSearchDto.getSearchCriterionList(), pageable);
     }
 }

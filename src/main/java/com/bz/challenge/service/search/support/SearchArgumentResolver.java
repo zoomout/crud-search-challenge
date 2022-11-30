@@ -36,7 +36,7 @@ public class SearchArgumentResolver implements HandlerMethodArgumentResolver {
         final var value = webRequest.getParameter(attr.value());
         final var allowedKeys = attr.allowedKeys();
         if (Strings.isBlank(value)) {
-            return null;
+            return new RecipeSearchDto();
         }
         var groups = value.split("_AND_");
         if (groups.length > attr.maxGroups()) {
