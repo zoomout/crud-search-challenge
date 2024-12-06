@@ -109,29 +109,31 @@ investigate).
 ## Examples of REST requests
 - Create
 ```
-$ curl 'http://localhost:8080/api/recipes' -i -X POST \
+curl 'http://localhost:8080/api/recipes' -i -X POST \
     -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
     -d '{"name":"dish","vegetarian":false,"servingsNumber":4,"ingredients":"carrot, apple, meat","instructions":"Grind the carrots and slice the apples, add some meat"}'
 ```
 - Retrieve
 ```
-$ curl 'http://localhost:8080/api/recipes' -i -X GET \
+curl 'http://localhost:8080/api/recipes' -i -X GET \
     -H 'Accept: application/json'
 ```
 - Update
 ```
-$ curl 'http://localhost:8080/api/recipes/1' -i -X PUT \
+curl 'http://localhost:8080/api/recipes/1' -i -X PUT \
     -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
     -d '{"name":"dish","vegetarian":false,"servingsNumber":5,"ingredients":"carrot, apple, meat","instructions":"Grind the carrots and slice the apples, add some meat"}'
 ```
 - Delete
 ```
-$ curl 'http://localhost:8080/api/recipes/1' -i -X DELETE \
+curl 'http://localhost:8080/api/recipes/1' -i -X DELETE \
     -H 'Accept: application/json'
 ```
 - Search
 ```
-$ curl 'http://localhost:8080/api/recipes/search?query=vegetarian!eq!false_AND_ingredients!cn!chicken_AND_servingsNumber!eq!4_AND_instructions!nc!cooke%20it' -i -X GET \
+curl 'http://localhost:8080/api/recipes/search?query=vegetarian!eq!false_AND_ingredients!cn!chicken_AND_servingsNumber!eq!4_AND_instructions!nc!cooke%20it' -i -X GET \
     -H 'Accept: application/json'
     
 Response:
