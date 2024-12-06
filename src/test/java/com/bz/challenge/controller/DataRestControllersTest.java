@@ -121,9 +121,12 @@ class DataRestControllersTest extends BaseControllerTest {
         createRecipe(payload);
         this.mockMvc.perform(delete("/api/recipes/1")
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent())
-            .andDo(document("delete-recipes"))
-            .andExpect(jsonPath("$").doesNotExist());
+            .andExpect(status().isOk())
+            .andDo(document("delete-recipes"));
+
+        this.mockMvc.perform(delete("/api/recipes/1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
 }
